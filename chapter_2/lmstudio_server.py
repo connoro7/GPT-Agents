@@ -6,14 +6,15 @@ LM_STUDIO_BASE_URL = "http://localhost:1234/v1"
 # Point to the local server
 client = OpenAI(base_url=LM_STUDIO_BASE_URL, api_key="not-needed")
 
-models = requests.get(f"{LM_STUDIO_BASE_URL}/models").json()["data"]
-models = [model["id"] for model in models]
-print("============================================================")
+try:
+    models = requests.get(f"{LM_STUDIO_BASE_URL}/models").json()["data"]
+except requests.exceptions.HTTPError:
+    print("Could not get models. Is LM Studio server running?")
+    raise
+
 print("Available models:")
-print("------------------------------------------------------------")
-for model in models:
+for model in [model["id"] for model in models]:
     print(model)
-print("============================================================")
 
 completion = client.chat.completions.create(
     model="google/gemma-3-1b",
