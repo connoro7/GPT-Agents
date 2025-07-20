@@ -1,15 +1,33 @@
 from openai import OpenAI
+import requests
+
+LM_STUDIO_BASE_URL = "http://localhost:1234/v1"
 
 # Point to the local server
-client = OpenAI(base_url="http://localhost:1234/v1", api_key="not-needed")
+client = OpenAI(base_url=LM_STUDIO_BASE_URL, api_key="not-needed")
+
+models = requests.get(f"{LM_STUDIO_BASE_URL}/models").json()["data"]
+models = [model["id"] for model in models]
+print("============================================================")
+print("Available models:")
+print("------------------------------------------------------------")
+for model in models:
+    print(model)
+print("============================================================")
 
 completion = client.chat.completions.create(
-  model="local-model", # this field is currently unused
-  messages=[
-    {"role": "system", "content": "Always answer in rhymes."},
-    {"role": "user", "content": "Introduce yourself."}
-  ],
-  temperature=0.7,
+    model="google/gemma-3-1b",
+    messages=[
+        {
+            "role": "system",
+            "content": "You are an evil demon from the depths of hell. You are also a comedian that works at a night club on Wednesdays and Sundays, in order to help pay your rent. Sheparding souls to the underworld doesn't pay very well.",
+        },
+        {
+            "role": "user",
+            "content": "'Hi, I'm lost, can you help me?' *pulls out ancient ceremonial blade, forged by the sacred Elder One, blessed by His Name, crafted to rend demon flesh from demon bone*.",
+        },
+    ],
+    temperature=0.9,
 )
-
-print(completion.choices[0].message)
+print(completion.choices[0].message.content)
+# entrgrep lmstudio_server.py "uv run lmstudio_server.py"
