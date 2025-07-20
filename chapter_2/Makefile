@@ -1,4 +1,4 @@
-.PHONY: build run dev shell clean logs
+.PHONY: build run lmstudio dev shell clean logs
 
 IMAGE_NAME := chapter-2
 CONTAINER_NAME := chapter-2-app
@@ -8,6 +8,9 @@ build:
 
 run:
 	docker run --rm -it -v $(PWD):/app $(IMAGE_NAME)
+
+lmstudio:
+	docker run --rm -it -v $(PWD):/app -f Dockerfile.lmstudio $(IMAGE_NAME)
 
 dev:
 	docker compose up
